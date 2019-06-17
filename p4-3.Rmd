@@ -1,0 +1,513 @@
+---
+
+---
+Explore and Summarize Data .
+ by Noura Hamad .
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#install.packages("weatherData",repos = "http://cran.us.r-project.org")
+
+```
+---
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+#install.packages("ggplot2", dependencies = T)
+library(ggplot2)
+#install.packages("knitr", dependencies = T)
+#install.packages("dplyr", dependencies = T)
+#install.packages("GGally")
+library(ggplot2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#install.packages("gplots")
+#installed.packages()
+library(gplots)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE }
+# this code for read the and upload the file.
+p<- read.csv('prosperLoanData.csv')
+```
+
+
+
+####Introduction :
+First I choose the prosper loan data , becuase it is useful for the economy envirmont , and I like to analysis  :),,  the first step is load the file after that chech the summary of the data   :
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# this code for get the statistical details. 
+summary(p)
+```
+from the output of the summary we have alot of information like 
+the mean of the term is 40.83 and of the borrwoer rate is about 0.1928 ..etc
+
+
+
+we will analysis of the veriable like :
+-Trem 
+-LoanStatus
+-Borrower rate 
+-Borrower state 
+-Occupation 
+-Employment status 
+-Is borrower has oner home 
+-Avaiable Bank card credit 
+-Income range 
+-Stante monthly income 
+-Loan orginal amount 
+- Monthly loan Payment
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ library(dplyr)
+ a <- p%>%
+            group_by(Occupation)%>%
+            tally()
+ 
+ 
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+ s <- p%>%
+            group_by(Occupation , IncomeRange )%>%
+            tally()
+```
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+table(is.na(p))
+
+```
+
+in this code we want check how many  missing value , in here we observe 1078519 missing value  and in the below code we want to check the coloms have the missing value :
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+colSums(is.na(p))
+```
+
+
+
+Detail about the culomns:
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+str(p)
+#detail about the culome.
+```
+
+ 
+###One varible  Analysis : 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE }
+#this code to analysis the one varible / Employment Status
+ggplot(aes(x=EmploymentStatus), data=p) +
+  geom_bar( stat="count")+xlab("Employment Status")+
+  ggtitle( "Counting The Employment Status" )
+```
+
+
+####description 1:
+In this plot we want to count the each Employment Status , and what we Observ is 
+over 60000  is Employed and them the next full time . and less status is not employed 
+and retired actually it is normal case.
+
+
+---
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE }
+ggplot(data=p, aes(x=BorrowerState)) +  
+  geom_bar(stat="count", fill = "pink")+
+          xlab("Borrower State")+
+  ggtitle( "Counting The Borrower State" )+
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5))
+```
+
+
+####description 2:
+In this case we want to count How many loan recorded in the bank , we Observe is CA the name is California  State Take first rank in the Number of loan .California is the most populous state in the United States and the third most extensive by area. and the second rank is texas. 
+
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE }
+ggplot(data=p, aes(x=IsBorrowerHomeowner)) +
+  geom_bar(stat="count" , fill="pink" , width = 0.3)
+```
+
+
+####description 3:
+here it is clear the most Borrowers have th house . so we think the loan take it not for build house , for another thing , for like cost of their son's university .
+
+---
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE }
+ggplot(data=p, aes(x=LoanStatus)) +
+  geom_bar(stat="count")+
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5))+
+  ggtitle( "Counting The Loan Status" )
+```
+
+
+####description 4:
+here the first ranke in the loan statuse is Current and the last rank is final payment progress , we have two things to explain it , the first one is maybe the pank have the finacial issue becouse they can't collect thier profit. and second thing maybe  they have external force "Economy isuue " so the poaple can't pay the monthley payment .
+
+
+---
+
+```{r fig.width=9, fig.height=5, echo=FALSE, message=FALSE, warning=FALSE}
+   ggplot(data=p, aes(x=Occupation)) +
+  geom_bar(stat="count", fill="blue") +
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "blue")) +
+  xlab("Occupation")+ggtitle("Occupation")
+```
+
+
+####description 5:
+ already here we will ignore the "other " value , the occupation have the highet number take the loan as the professional .
+
+---
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data=p, aes(x=LoanOriginationQuarter)) +
+  geom_bar(stat="count", fill = "pink")+
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "blue")) +
+  xlab("Occupation")+
+  ggtitle("Counting the loan in each Quarter in the year ") 
+```
+
+
+####description 6:
+here we observe the highst loan  is fourth Quarter in 2013 , it is about 14,980.
+there is no expalation ,, many things maybe happened in that year like Employing with high salary so the people can take loan . in some year we donot have data maybe it missing or somthing happend. 
+
+
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+p$Term <- factor(p$Term, levels=c(12,24,36,48,60), ordered=TRUE)
+ggplot(data=p, aes(x=Term)) +
+  geom_histogram(stat="count")
+```
+
+
+####description 7:
+ the most of borrowes they spend about 2-4 years to return the loan .
+ 
+
+---
+
+
+
+in this section explore one varible  we can say :
+* most of them hadthe house .
+* the professional jop is the most jop have loan.
+*the most yaer have request loan is 2013 .
+*most of the data the loan status is current.
+* The most of stats have high borrower is California.
+
+### What is the structure of your dataset?
+   there is about 113937 Observation and 81 variable 
+    the data is about the loans between 2005-2014.
+
+### What is the main feature of interest in your dataset?
+ the main varible im intrested is :
+ -Trem 
+-LoanStatus
+-Borrower rate 
+-Borrower state 
+-Occupation 
+-Employment status 
+-Is borrower has oner home 
+-Avaiable Bank card credit 
+-Income range 
+-Stante monthly income 
+-Loan orginal amount 
+- Monthly loan Payment
+
+### What other features in the dataset do you think will help support your \
+ the other feature will help me is when add new colomn call reasontoborrow .
+
+
+
+
+###Two variable analysis :
+
+```{r fig.width=9, fig.height=5 , echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data=p, aes(x=LoanOriginationQuarter, y=IncomeRange)) +
+  geom_count( fill = "pink")+
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "blue")) +
+  xlab("Years")+ ggtitle("The range  of Income  in each year ")
+```
+
+
+####description 1:
+now it is the best part :) , we can know what is the year have the highes income range, we can observe the yaer have the higest is Q4 2013   the income range is about 25,000-75,000 .so that explain the past plot whay we have alot loan request in the Q$ 2013 :)
+
+
+---
+
+
+```{r fig.width=9, fig.height=5 ,echo=FALSE, message=FALSE, warning=FALSE}
+  ggplot(aes(x=LoanOriginalAmount, y=MonthlyLoanPayment ), data=p) +
+  geom_point(fill="blue") + coord_cartesian() +
+ scale_color_gradient() +
+ theme_bw()+ggtitle("The monthly payment and loan ")
+```
+
+
+####description 2:
+that we see the loan original amount the max is about 35000 and the min is 1000 that mean thier salary low , and we have diffrent  monthely payment according the loan original amount  when increas the loan then  will increase the monthely loan pay .in other side we observ most loan is about 0-15000 the plot have a dark section in this range .  
+
+
+
+--- 
+
+```{r fig.width=9, fig.height=5 ,echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(p, aes(x=IncomeRange,y=BorrowerRate )) +
+  geom_violin()+
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "blue"))+
+  ggtitle("Borrowe Rate and Income Range")
+```
+
+
+####description 3:
+in this plot we want to discover the realation between income range and borrwer rate , we see here the not displayed have all Borrower rate and the all incomes range not have rate  above 3.5% , we observ the  incomrange (100000) we have many data between 0.6-1.6% borrowerrate that mean most of data the borrower rate is between 0.6 - 1.6% .  
+
+---
+
+```{r fig.width=10, fig.height=5 ,echo=FALSE, message=FALSE, warning=FALSE}
+  ggplot(p, aes(x=Occupation,y=IncomeRange)) +
+  geom_count()  + 
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "blue")) +
+  xlab("Occupation")+
+  ggtitle("The income range for each Occupation") 
+```
+
+
+####description 4: 
+ again the pest part :) , we wnat to know what is the job have the highest income range and what the job most people in unted state . we observe the most job incressing in the united state is Nurse(RN) ! and the most of them their salary about 25,000  -49,000 . 
+
+
+---
+
+```{r fig.width=9, fig.height=5 , echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(  x=Occupation, y=Term), data=p) +geom_count()+
+  geom_density()+ggtitle("Term of payment for each Occupation ") +
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "red")) + 
+  xlab("Occupation") + ylab("Term") 
+ 
+```
+
+
+####description 5:
+we observe tha mean term is 20-40 months and the student almost of them is about 20-40. most of borrwer  borrword 
+
+
+---
+
+```{r fig.width=9, fig.height=5 , echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=IncomeRange, y=MonthlyLoanPayment), data=p) +
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5))+
+  ggtitle("monthely payment for each income range ")
+```
+
+
+####description 6:
+The Income \$100,000+ have the monthly payment is above from 1000 -2000 becuse it high salary ,  
+and the most salary in this plot have monthely payment is belowe 1500. in the other side we observe the 100, 000 have the high median = 275\$.
+
+
+---
+
+
+## Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. How did the feature(s) of interest vary with other features in \
+the dataset?
+
+*when increas the income range the loan increaed .
+*when increas the income range the borrowe rate will increas
+* The mean term (the period to return the mony in the monthes ) is 40 monthes.
+* the max loan is 35000$ and min =1000$ and the monthely payment according the loans 
+* the most requste of loans is in 2013 and the highest salary is in 2013 .
+
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+No , I didn`t
+
+### What was the strongest relationship you found?
+the realationship between income range and  value loan .
+
+
+
+
+
+###exppolorate 3 varible :
+```{r fig.width=11, fig.height=5 ,echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(p, aes(x =Occupation, y =LoanStatus , group = EmploymentStatus , color = EmploymentStatus)) +
+  geom_jitter() +
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "black")) + 
+  xlab("Occupation")+
+  ggtitle("owner house and the loan status ")
+```
+
+
+####description 1:
+Most of the occupation thier employment status is employed and the loan statust is current. 
+
+---
+
+
+```{r fig.width=11, fig.height=5 ,echo=FALSE, message=FALSE, warning=FALSE }
+ggplot(p, aes(x =Occupation, y =LoanStatus , group = IsBorrowerHomeowner , color = IsBorrowerHomeowner)) +
+  geom_jitter() +
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "red")) + 
+  xlab("Occupation")+
+  ggtitle("owner house and the loan status ")
+```
+
+
+####description 2:
+The normal thing happened herem we observe the student they don`t have house they live with their family ,, we observe the Engineer and executive manager most of them have house.most of them have high salary , on other side for example we have food services ,  fireman and food service management and other jops most of them dont have house because of them low salary .   
+
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(p, aes(y =LoanOriginalAmount, 
+               x =LoanStatus ,
+               fill = IsBorrowerHomeowner)) +
+  geom_boxplot() +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ggtitle("Loan Amount And Loan statuse with have hous")
+```
+
+
+####description 3:
+here we will focuse in current status the median in the current status is about 10000 $. 
+
+---
+
+
+```{r fig.width=10, fig.height=5 , echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(subset(p,(Occupation=='Professional')| 
+                (Occupation=='Construction')| 
+                (Occupation=='Teacher')), 
+       aes(x =LoanOriginalAmount, 
+              y = MonthlyLoanPayment, 
+              color = Occupation)) +
+  geom_point() + ylab("Monthly payment [USD]")+
+  xlab("Loan Amount")+
+  geom_smooth(method = "lm", se = FALSE,size=2)+
+  ggtitle("Monthly payment and loan amount according important jop  ")
+```
+
+
+####description 4:
+here we observe for example the teacher can take from 1000-20000 $ and pay monthely 0-750$ ,and another jop like professional they take loan form 1000-25000$ and they pay monthely 0-1000$ ,,, in other side the most pay monthely about 0-1500$ . 
+
+
+
+
+# Multivariate Analysis
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+
+The most intrested in the professional jop is they have all the levels of loans and monthey payment.and the most intrested is most 
+of the borrower have  house. 
+
+
+### Were there any interesting or surprising interactions between features?
+the peofessional jop have all levels of the loan original amount and monthely payment.
+
+
+---
+---
+---
+
+###Final Plots and Summary:
+
+```{r fig.width=9, fig.height=5,echo=FALSE, message=FALSE, warning=FALSE, packages}
+ggplot(data=p, aes(x=LoanOriginationQuarter, y=IncomeRange)) +
+  geom_count(fill = "pink")+
+  theme(axis.text.x = element_text(angle = 70, vjust = 0.5, color = "blue")) +
+  xlab("Years")+ylab("Income range [USD]")+ ggtitle("The range  of Income  in each year ")
+```
+
+
+####description 1:
+ here we observe the period is start from  2005 Q4 to Q1 2014 some Quarter is missing 
+ but according what we have the highest number of the loan is from Q4 2013 -Q1 2014 
+ the  2013 and 2014 have the highes income range according the ecomomic information when have high salary then borrow more .
+ 
+
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(p, aes(y =LoanOriginalAmount, 
+               x =LoanStatus ,
+               fill = IsBorrowerHomeowner)) +
+  geom_boxplot() +ylab("Loan [USD]")+xlab("Loan Status")+
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ggtitle("Loan Amount And Loan statuse with have hous")
+```
+
+
+####description 2:
+here we observe the  current status (important status ),  the median in the current status is about 10000 $.
+
+
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(subset(p,(Occupation=='Professional')| 
+                (Occupation=='Construction')| 
+                (Occupation=='Teacher')), 
+       aes(x =LoanOriginalAmount, 
+              y = MonthlyLoanPayment, 
+              color = Occupation)) +
+  geom_point() + ylab("Monthly payment [USD]")+
+  xlab("Loan Amount")+     
+  geom_smooth(method = "lm", se = FALSE,size=2)+
+   ggtitle("Monthly payment and loan amount according important jop  ")
+```
+
+
+###description 3:
+here we observe for example the teacher can take from 1000-20000 \$ and pay monthely 0-750\$ ,and another jop like professional they take loan form 1000-25000\$ and they pay monthely 0-1000\$ , in other side the most pay monthely about 0-1500\$ . 
+
+
+
+---
+
+##Reflection:
+ The prosper loan Data have 113937 rows and 81 varible , have more detail about the requests of the loan from bank , the period is from 2005-2014 .
+ first I started by understatnded all the varible and check what is the importent varaible , then I put many Qustion like 
+ * what is the min, max, mean for some variabl.
+ *what is the highest salary and loan and Borrow rate  And the jops have highest salary 
+ *according the isownerhome varible how many people have house .
+ *what is the state have a highest Borrwer ?
+ the difficult side in this project is programming by R and choose the dataset to explore. and  
+ the perfect time when the code running and when I see my work useful.
+ 
+ after Explore data :
+ 1- is clear we have relation between incom range and loan original amount when we have high salary then increase the number of loans and the loans  and increase the monthely payment.
+ 2- the mean of trem is 40 months.
+ 3-  high number of loans in 2013 and  high salary . 
+ 
+ in  the future we can  enriched in future work collect more data to discover the future economy and to improve the performance of  banks like .
+
+
+finally it is great project I learned alot things :).
+
+
+
+####references:
+https://www.analyticsvidhya.com/blog/2016/02/complete-tutorial-learn-data-science-scratch/#three
+
+
+
